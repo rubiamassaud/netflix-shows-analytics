@@ -15,6 +15,7 @@ O projeto visa realizar o processo de **ETL (Extract, Transform, Load)** em uma 
 - [ ] Estruturação do repositório e README (Responsável: Nicolas)
 - [ ] Descrição das transformações (Limpeza de nulos, tipos de dados) (Responsável: Felipe)
 - [ ] Protótipo do Dashboard (Quais gráficos usar) (Responsável: Vanderson)
+- [ ] Implementação do ETL com Pandas (Responsável: Isaac)
 
 ## 🛠️ Ideia Inicial do Dashboard (Streamlit)
 * Gráfico de Rosca: Distribuição de gastos por categoria.
