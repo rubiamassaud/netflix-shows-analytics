@@ -3,7 +3,7 @@
 
 ## 📋 Tema do Projeto
 
-Analisar o conjunto de dados "Netflix Shows" (Kaggle) para entender a composição do catálogo, identificar tendências de lançamentos, gêneros mais populares, distribuição geográfica e outras métricas relevantes, apresentando tudo em um dashboard interativo.
+Analisar o conjunto de dados ["Netflix Shows" (Kaggle)](https://www.kaggle.com/datasets/shivamb/netflix-shows) para entender a composição do catálogo, identificar tendências de lançamentos, gêneros mais populares, distribuição geográfica e outras métricas relevantes, apresentando tudo em um dashboard interativo.
 
 ## 👥 Integrantes
 
