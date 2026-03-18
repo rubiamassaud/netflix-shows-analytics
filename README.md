@@ -86,11 +86,27 @@ netflix-shows-analytics/
 
 ## 🔧 Transformações Planejadas
 
-- Conversão de `date_added` → `datetime`.
-- Explosão das colunas `cast` e `listed_in` em tabelas auxiliares.
-- Tratamento de valores nulos (`Desconhecido` ou remoção de linhas).
-- Criação de colunas derivadas (`duration_value`, `duration_unit`).
-- Geração de datasets intermediários (`genres.parquet`, `countries.parquet`).
+### Limpeza e padronização
+- Converter date_added de texto para datetime.
+- Remover registros duplicados.
+- Preencher nulos em country, director e cast com "Unknown" e rating com "Not Rated".
+- Padronizar strings (remover espaços extras).
+- Separar duration em duration_value (int) e duration_unit ("minutes" ou "seasons").
+- Garantir que duration_value seja numérico.
+
+### Colunas derivadas
+- year_added e month_added extraídos de date_added.
+- is_movie (booleano) indicando se o conteúdo é filme.
+- Possível criação de title_length para análise exploratória.
+
+### Tabelas auxiliares
+- genres.parquet — explosão de listed_in (uma linha por gênero).
+- countries.parquet — explosão de country (uma linha por país).
+
+### Saída de dados
+- netflix_clean.parquet — dataset principal limpo.
+- genres.parquet — tabela de gêneros normalizados.
+- countries.parquet — tabela de países normalizados.
 
 ## 📊 Ideia Inicial do Dashboard
 
