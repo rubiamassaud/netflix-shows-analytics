@@ -65,24 +65,24 @@ netflix-shows-analytics/
 | 22/03 | Revisão geral do README                          | Todos          |
 | 23/03 | ✅ Entrega da Primeira Etapa                     | Todos          |
 
-### Segunda Etapa — ETL e Dashboard (entrega: 27/07)
+### Segunda Etapa — ETL e Dashboard (entrega: 18/05)
 
 | Data  | Marco                                                  | Responsável        |
 |-------|--------------------------------------------------------|--------------------|
-| 07/04 | Extração e validação do CSV bruto                      | Rubia              |
-| 14/04 | Notebook exploratório (`01-exploracao.ipynb`)          | Felipe & Isaac     |
+| 25/04 | Extração e validação do CSV bruto                      | Rubia              |
+| 30/04 | Notebook exploratório (`01-exploracao.ipynb`)          | Felipe & Isaac     |
 | 05/05 | Limpeza e padronização dos dados (nulos, tipos)        | Felipe             |
-| 12/05 | Colunas derivadas (`duration_value`, `duration_unit`)  | Felipe             |
-| 19/05 | Tabelas auxiliares (`genres.parquet`, `countries.parquet`) | Isaac          |
-| 26/05 | Script ETL completo em `src/etl.py`                    | Isaac              |
-| 02/06 | Armazenamento dos dados tratados em `data/processed/`  | Isaac              |
-| 09/06 | Estrutura base do dashboard (`dashboard/app.py`)       | Vanderson          |
-| 16/06 | Implementação dos 6 gráficos + sidebar de filtros      | Vanderson          |
-| 23/06 | Testes de integração ETL ↔ Dashboard                   | Isaac & Vanderson  |
-| 07/07 | Publicação do dashboard (Streamlit Cloud)              | Vanderson          |
-| 14/07 | Testes finais e ajustes                                | Todos              |
-| 21/07 | Revisão do README e documentação final                 | Nicolas            |
-| 27/07 | ✅ Entrega Final da Segunda Etapa                      | Todos              |
+| 05/05 | Colunas derivadas (`duration_value`, `duration_unit`)  | Felipe             |
+| 08/05 | Tabelas auxiliares (`genres.parquet`, `countries.parquet`) | Isaac          |
+| 11/05 | Script ETL completo em `src/etl.py`                    | Isaac              |
+| 11/05 | Armazenamento dos dados tratados em `data/processed/`  | Isaac              |
+| 13/05 | Estrutura base do dashboard (`dashboard/app.py`)       | Vanderson          |
+| 15/05 | Implementação dos 6 gráficos + sidebar de filtros      | Vanderson          |
+| 16/05 | Testes de integração ETL ↔ Dashboard                   | Isaac & Vanderson  |
+| 17/05 | Publicação do dashboard (Streamlit Cloud)              | Vanderson          |
+| 17/05 | Testes finais e ajustes                                | Todos              |
+| 17/05 | Revisão do README e documentação final                 | Nicolas            |
+| 18/05 | ✅ Entrega Final da Segunda Etapa                      | Todos              |
 
 ## 🔧 Transformações Planejadas
 
