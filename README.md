@@ -36,13 +36,15 @@ netflix-shows-analytics/
 ├─ src/
 │  ├─ __init__.py
 │  ├─ etl.py
-│  └─ utils.py
+│  ├─ utils.py
+│  └─ validate_raw.py
 │
 ├─ dashboard/
 │  └─ app.py
 │
 ├─ docs/
-│  └─ .gitkeep
+│  ├─ .gitkeep
+│  └─ validacao_raw.md
 │
 ├─ .gitignore
 ├─ requirements.txt
