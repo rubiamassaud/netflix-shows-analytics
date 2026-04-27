@@ -15,7 +15,34 @@ def clean_data(df):
     for col in df.select_dtypes(include="object"):
         df[col] = df[col].str.strip()
 
+    df = df.drop_duplicates(subset="show_id")
+
+    df["date_added"] = pd.to_datetime(df["date_added"], errors="coerce")
+
+    df["country"] = df["country"].fillna("Unknown")
+    df["director"] = df["director"].fillna("Unknown")
+    df["cast"] = df["cast"].fillna("Unknown")
+    df["rating"] = df["rating"].fillna("Not Rated")
+
     return df
+
+
+def add_derived_columns(df):
+    df = df.copy()
+
+    duration_split = df["duration"].str.extract(r"^(\d+)\s+(\w+)")
+    df["duration_value"] = pd.to_numeric(duration_split[0], errors="coerce").astype("Int64")
+    df["duration_unit"] = duration_split[1].str.lower().map(
+        lambda x: "seasons" if isinstance(x, str) and x.startswith("season") else "minutes"
+    )
+
+    df["year_added"] = df["date_added"].dt.year.astype("Int64")
+    df["month_added"] = df["date_added"].dt.month.astype("Int64")
+    df["is_movie"] = df["type"] == "Movie"
+    df["title_length"] = df["title"].str.len()
+
+    return df
+
 
 def create_genres_table(df):
     return (
@@ -41,6 +68,7 @@ def save_parquet(df, name):
 def main():
     df = load_data()
     df = clean_data(df)
+    df = add_derived_columns(df)
 
     genres = create_genres_table(df)
     countries = create_countries_table(df)
