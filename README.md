@@ -124,6 +124,39 @@ netflix-shows-analytics/
 > O dashboard será desenvolvido em **Streamlit** (arquivo `dashboard/app.py`).  
 > Dependências: `pandas`, `numpy`, `streamlit`, `plotly`, `pydeck`.
 
+## ✅ Entregas implementadas na parte do Isaac
+
+A parte de ETL foi implementada em `src/etl.py` com as seguintes funções:
+
+- leitura do CSV bruto em `data/raw/netflix_titles.csv`;
+- limpeza e padronização dos dados;
+- remoção de duplicidades por `show_id`;
+- conversão de `date_added` para data;
+- tratamento de valores nulos;
+- criação das colunas derivadas `duration_value`, `duration_unit`, `year_added`, `month_added`, `is_movie` e `title_length`;
+- criação das tabelas auxiliares `genres.parquet` e `countries.parquet`;
+- armazenamento dos dados tratados em `data/processed/`.
+
+Para executar o ETL:
+
+```bash
+python src/etl.py
+```
+
+Arquivos gerados:
+
+```txt
+data/processed/netflix_clean.parquet
+data/processed/genres.parquet
+data/processed/countries.parquet
+```
+
+Para executar o dashboard localmente:
+
+```bash
+streamlit run dashboard/app.py
+```
+
 ## 📚 Referências
 
 - [Kaggle – Netflix Shows](https://www.kaggle.com/datasets/shivamb/netflix-shows)

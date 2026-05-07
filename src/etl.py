@@ -1,4 +1,15 @@
-from pathlib import Patp
+"""Pipeline ETL do projeto Netflix Shows Analytics.
+
+Este script lê o CSV bruto em data/raw/netflix_titles.csv, aplica limpeza,
+cria colunas derivadas e salva os arquivos tratados em data/processed/.
+
+Saídas geradas:
+- netflix_clean.parquet
+- genres.parquet
+- countries.parquet
+"""
+
+from pathlib import Path
 
 import pandas as pd
 
