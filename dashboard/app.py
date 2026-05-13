@@ -1,153 +1,222 @@
-from pathlib import Path
-
+import streamlit as st
 import pandas as pd
 import plotly.express as px
-import streamlit as st
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-PROCESSED_PATH = BASE_DIR / "data" / "processed"
+# CONFIGURAÇÃO DA PÁGINA
 
 st.set_page_config(
     page_title="Netflix Shows Analytics",
     page_icon="🎬",
-    layout="wide",
+    layout="wide"
 )
 
+st.title("🎬 Netflix Shows Analytics Dashboard")
+st.markdown("Dashboard analítico do catálogo Netflix")
+
+# CARREGAMENTO DOS DADOS
 
 @st.cache_data
-def load_processed_data():
-    netflix_path = PROCESSED_PATH / "netflix_clean.parquet"
-    genres_path = PROCESSED_PATH / "genres.parquet"
-    countries_path = PROCESSED_PATH / "countries.parquet"
-
-    missing = [path.name for path in [netflix_path, genres_path, countries_path] if not path.exists()]
-    if missing:
-        st.error(
-            "Arquivos processados não encontrados: "
-            + ", ".join(missing)
-            + ". Rode primeiro: python src/etl.py"
-        )
-        st.stop()
-
-    df = pd.read_parquet(netflix_path)
-    genres = pd.read_parquet(genres_path)
-    countries = pd.read_parquet(countries_path)
-    return df, genres, countries
-
-
-def apply_filters(df, genres, countries):
-    st.sidebar.header("Filtros")
-
-    type_options = sorted(df["type"].dropna().unique())
-    selected_types = st.sidebar.multiselect("Tipo", type_options, default=type_options)
-
-    years = sorted(df["release_year"].dropna().astype(int).unique())
-    min_year, max_year = int(min(years)), int(max(years))
-    selected_years = st.sidebar.slider("Ano de lançamento", min_year, max_year, (min_year, max_year))
-
-    genre_options = sorted(genres["genre"].dropna().unique())
-    selected_genres = st.sidebar.multiselect("Gênero", genre_options)
-
-    country_options = sorted(countries["country"].dropna().unique())
-    selected_countries = st.sidebar.multiselect("País", country_options)
-
-    filtered = df[
-        df["type"].isin(selected_types)
-        & df["release_year"].between(selected_years[0], selected_years[1])
-    ].copy()
-
-    if selected_genres:
-        show_ids = genres[genres["genre"].isin(selected_genres)]["show_id"].unique()
-        filtered = filtered[filtered["show_id"].isin(show_ids)]
-
-    if selected_countries:
-        show_ids = countries[countries["country"].isin(selected_countries)]["show_id"].unique()
-        filtered = filtered[filtered["show_id"].isin(show_ids)]
-
-    return filtered
-
-
-def main():
-    st.title("🎬 Netflix Shows Analytics")
-    st.write("Dashboard interativo com dados tratados pelo pipeline ETL em Pandas.")
-
-    df, genres, countries = load_processed_data()
-    filtered = apply_filters(df, genres, countries)
-
-    filtered_genres = genres[genres["show_id"].isin(filtered["show_id"])]
-    filtered_countries = countries[countries["show_id"].isin(filtered["show_id"])]
-
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Títulos", f"{len(filtered):,}".replace(",", "."))
-    col2.metric("Filmes", f"{filtered['type'].eq('Movie').sum():,}".replace(",", "."))
-    col3.metric("Séries", f"{filtered['type'].eq('TV Show').sum():,}".replace(",", "."))
-    col4.metric("Países", filtered_countries["country"].nunique())
-
-    st.divider()
-
-    left, right = st.columns(2)
-
-    with left:
-        type_count = filtered["type"].value_counts().reset_index()
-        type_count.columns = ["type", "count"]
-        st.plotly_chart(
-            px.bar(type_count, x="type", y="count", title="Quantidade por tipo", text="count"),
-            use_container_width=True,
-        )
-
-    with right:
-        rating_count = filtered["rating"].value_counts().head(10).reset_index()
-        rating_count.columns = ["rating", "count"]
-        st.plotly_chart(
-            px.pie(rating_count, names="rating", values="count", title="Distribuição de ratings"),
-            use_container_width=True,
-        )
-
-    left, right = st.columns(2)
-
-    with left:
-        top_genres = filtered_genres["genre"].value_counts().head(10).reset_index()
-        top_genres.columns = ["genre", "count"]
-        st.plotly_chart(
-            px.bar(top_genres, x="count", y="genre", orientation="h", title="Top 10 gêneros"),
-            use_container_width=True,
-        )
-
-    with right:
-        releases = (
-            filtered.groupby("release_year")
-            .size()
-            .reset_index(name="count")
-            .sort_values("release_year")
-        )
-        st.plotly_chart(
-            px.line(releases, x="release_year", y="count", markers=True, title="Lançamentos ao longo dos anos"),
-            use_container_width=True,
-        )
-
-    left, right = st.columns(2)
-
-    with left:
-        top_countries = filtered_countries["country"].value_counts().head(15).reset_index()
-        top_countries.columns = ["country", "count"]
-        st.plotly_chart(
-            px.bar(top_countries, x="country", y="count", title="Top 15 países"),
-            use_container_width=True,
-        )
-
-    with right:
-        duration_df = filtered.dropna(subset=["duration_value"])
-        st.plotly_chart(
-            px.box(duration_df, x="type", y="duration_value", title="Distribuição de duração por tipo"),
-            use_container_width=True,
-        )
-
-    st.subheader("Dados filtrados")
-    st.dataframe(
-        filtered[["show_id", "title", "type", "release_year", "rating", "duration", "country"]],
-        use_container_width=True,
+def load_data():
+    df = pd.read_parquet(
+        "data/processed/netflix_titles_cleaned.parquet"
     )
+    return df
 
+df = load_data()
 
-if __name__ == "__main__":
-    main()
+# SIDEBAR FILTROS
+
+st.sidebar.header("Filtros")
+
+tipo = st.sidebar.multiselect(
+    "Tipo",
+    options=df["type"].dropna().unique(),
+    default=df["type"].dropna().unique()
+)
+
+anos = st.sidebar.slider(
+    "Ano de Lançamento",
+    int(df["release_year"].min()),
+    int(df["release_year"].max()),
+    (
+        int(df["release_year"].min()),
+        int(df["release_year"].max())
+    )
+)
+
+paises = st.sidebar.multiselect(
+    "País",
+    options=sorted(df["country"].dropna().unique()),
+    default=[]
+)
+
+ratings = st.sidebar.multiselect(
+    "Classificação",
+    options=df["rating"].dropna().unique(),
+    default=df["rating"].dropna().unique()
+)
+
+# APLICAÇÃO DOS FILTROS
+
+df_filtered = df[
+    (df["type"].isin(tipo)) &
+    (df["release_year"].between(anos[0], anos[1])) &
+    (df["rating"].isin(ratings))
+]
+
+if paises:
+    df_filtered = df_filtered[
+        df_filtered["country"].isin(paises)
+    ]
+
+# KPIs
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric(
+    "Total de Títulos",
+    len(df_filtered)
+)
+
+col2.metric(
+    "Filmes",
+    len(df_filtered[df_filtered["type"] == "Movie"])
+)
+
+col3.metric(
+    "Séries",
+    len(df_filtered[df_filtered["type"] == "TV Show"])
+)
+
+st.divider()
+
+# GRÁFICO 1 — TIPO DE CONTEÚDO
+
+st.subheader("1. Distribuição por Tipo")
+
+fig1 = px.pie(
+    df_filtered,
+    names="type",
+    title="Filmes vs Séries"
+)
+
+st.plotly_chart(fig1, use_container_width=True)
+
+# GRÁFICO 2 — TOP GÊNEROS
+
+st.subheader("2. Top Gêneros")
+
+genre_count = (
+    df_filtered["listed_in"]
+    .str.split(", ")
+    .explode()
+    .value_counts()
+    .head(10)
+)
+
+fig2 = px.bar(
+    x=genre_count.values,
+    y=genre_count.index,
+    orientation="h",
+    labels={
+        "x": "Quantidade",
+        "y": "Gênero"
+    },
+    title="Top 10 Gêneros"
+)
+
+st.plotly_chart(fig2, use_container_width=True)
+
+# GRÁFICO 3 — LANÇAMENTOS POR ANO
+
+st.subheader("3. Lançamentos por Ano")
+
+release_year = (
+    df_filtered["release_year"]
+    .value_counts()
+    .sort_index()
+)
+
+fig3 = px.line(
+    x=release_year.index,
+    y=release_year.values,
+    labels={
+        "x": "Ano",
+        "y": "Quantidade"
+    },
+    title="Lançamentos por Ano"
+)
+
+st.plotly_chart(fig3, use_container_width=True)
+
+# GRÁFICO 4 — CLASSIFICAÇÃO INDICATIVA
+
+st.subheader("4. Ratings")
+
+rating_count = (
+    df_filtered["rating"]
+    .value_counts()
+)
+
+fig4 = px.bar(
+    x=rating_count.index,
+    y=rating_count.values,
+    labels={
+        "x": "Rating",
+        "y": "Quantidade"
+    },
+    title="Distribuição de Ratings"
+)
+
+st.plotly_chart(fig4, use_container_width=True)
+
+# GRÁFICO 5 — TOP PAÍSES
+
+st.subheader("5. Top Países")
+
+country_count = (
+    df_filtered["country"]
+    .value_counts()
+    .head(10)
+)
+
+fig5 = px.bar(
+    x=country_count.values,
+    y=country_count.index,
+    orientation="h",
+    labels={
+        "x": "Quantidade",
+        "y": "País"
+    },
+    title="Top 10 Países"
+)
+
+st.plotly_chart(fig5, use_container_width=True)
+
+# GRÁFICO 6 — DURAÇÃO
+
+st.subheader("6. Distribuição de Duração")
+
+duration = (
+    df_filtered["duration"]
+    .value_counts()
+    .head(15)
+)
+
+fig6 = px.bar(
+    x=duration.index,
+    y=duration.values,
+    labels={
+        "x": "Duração",
+        "y": "Quantidade"
+    },
+    title="Distribuição de Duração"
+)
+
+st.plotly_chart(fig6, use_container_width=True)
+
+# TABELA FINAL
+
+st.subheader("Dados Filtrados")
+
+st.dataframe(df_filtered)
