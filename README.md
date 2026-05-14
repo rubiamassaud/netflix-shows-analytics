@@ -21,6 +21,10 @@ Analisar o conjunto de dados ["Netflix Shows" (Kaggle)](https://www.kaggle.com/d
 - Identificar tendências temporais de adição de títulos.
 - Disponibilizar um dashboard que permita ao usuário filtrar e comparar métricas de forma dinâmica.
 
+## 📌 Organização do Projeto
+
+- [Trello do Projeto](https://trello.com/b/FdZDFQXB/grupo-pi-senac)
+
 ## 📂 Estrutura do Repositório
 
 ```
@@ -122,7 +126,7 @@ netflix-shows-analytics/
   6. Box/Violin – Duração média por gênero.
 
 > O dashboard será desenvolvido em **Streamlit** (arquivo `dashboard/app.py`).  
-> Dependências: `pandas`, `numpy`, `streamlit`, `plotly`, `pydeck`.
+> Dependências: `pandas`, `numpy`, `streamlit`, `plotly`, `pydeck`, `pyarrow`.
 
 ## ✅ Entregas implementadas na parte do Isaac
 
@@ -137,7 +141,20 @@ A parte de ETL foi implementada em `src/etl.py` com as seguintes funções:
 - criação das tabelas auxiliares `genres.parquet` e `countries.parquet`;
 - armazenamento dos dados tratados em `data/processed/`.
 
-Para executar o ETL:
+## 🚀 Como executar o projeto
+
+1. Criar ambiente virtual
+2. Instalar dependências
+3. Executar ETL
+4. Executar dashboard
+
+Instalar dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+Executar o ETL:
 
 ```bash
 python src/etl.py
@@ -151,7 +168,7 @@ data/processed/genres.parquet
 data/processed/countries.parquet
 ```
 
-Para executar o dashboard localmente:
+Executar o dashboard localmente:
 
 ```bash
 streamlit run dashboard/app.py
