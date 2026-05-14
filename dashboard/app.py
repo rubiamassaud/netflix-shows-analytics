@@ -18,7 +18,8 @@ st.markdown("Dashboard analítico do catálogo Netflix")
 @st.cache_data
 def load_data():
     df = pd.read_parquet(
-        "data/processed/netflix_titles_cleaned.parquet"
+
+        "data/processed/netflix_clean.parquet"
     )
     return df
 
