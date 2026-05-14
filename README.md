@@ -118,7 +118,7 @@ netflix-shows-analytics/
   2. Bar – Top 10 gêneros.
   3. Line – Lançamentos ao longo dos anos.
   4. Pie – Distribuição de ratings.
-  5. Map (choropleth) – Conteúdo por país.
+  5. Bar – Top países com maior quantidade de títulos.
   6. Box/Violin – Duração média por gênero.
 
 > O dashboard será desenvolvido em **Streamlit** (arquivo `dashboard/app.py`).  
